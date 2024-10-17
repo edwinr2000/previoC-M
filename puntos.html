@@ -54,7 +54,7 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <a href="index.html" class="nav-item nav-link">Inicio</a>
-                        <a href="contact.html" class="nav-item nav-link active">Contáctanos</a>
+                        <a href="contact.html" class="nav-item nav-link">Contáctanos</a>
                     </div>
                     <div class="d-none d-xl-flex me-3">
                         <div class="d-flex flex-column pe-3 border-end border-primary">
@@ -70,15 +70,66 @@
             <!-- Header Start -->
             <div class="container-fluid bg-breadcrumb">
                 <div class="container text-center py-5" style="max-width: 900px;">
-                    <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Contáctanos</h4>
-                    <ol class="breadcrumb d-flex justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
-                        <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
-                    </ol>    
+                    <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Consulta tus puntos</h4>  
                 </div>
             </div>
             <!-- Header End -->
         </div>
         <!-- Navbar & Hero End -->
+
+        <!-- Consulta Puntos Start-->
+        <div class="container-fluid contact bg-light py-5">
+            <div class="container py-5">
+                <div class="row g-5">
+                    <div class="col-lg-12 text-center">
+                        <h4 class="text-uppercase text-primary">Consulta de Puntos</h4>
+                        <h1 class="display-3 text-capitalize mb-3">Ingresa tus Datos</h1>
+                        <p class="mb-0">Introduce tu cédula para consultar tus puntos acumulados.</p>
+                    </div>
+                    <div class="col-lg-12 text-center">
+                        <label for="cedula">Ingrese su cédula:</label>
+                        <input type="text" id="cedula" placeholder="Cédula">
+                        <button onclick="buscarPuntos()">Consultar Puntos</button>
+                        <p id="resultado"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            async function buscarPuntos() {
+                const cedula = document.getElementById('cedula').value;
+                const sheetId = '1y9szhGBswE6P88CGhH0WXrCljQBbTSfhQcb3OJQAA8o';  // ID de tu hoja de cálculo
+                const apiKey = 'AIzaSyBvIMTSU9d4WKOAnCGw1WZLJZ4zsAgbRJY';     // Reemplaza con tu clave de API
+    
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Datos?key=${apiKey}`;
+    
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+    
+                    if (!data.values) {
+                        throw new Error("No se encontraron valores en la hoja");
+                    }
+    
+                    // Omitimos la primera fila (encabezados) y buscamos a partir de la segunda fila
+                    const filas = data.values.slice(1);  // Omite la primera fila con los encabezados
+                    const fila = filas.find(row => row[0] === cedula);
+    
+                    if (fila) {
+                        const puntos = fila[1];  // Asumimos que la segunda columna tiene los puntos
+                        document.getElementById('resultado').innerText = `Puntos: ${puntos}`;
+                    } else {
+                        document.getElementById('resultado').innerText = 'Cédula no encontrada.';
+                    }
+                } catch (error) {
+                    console.error('Error al obtener los datos:', error);
+                    document.getElementById('resultado').innerText = 'Error al obtener los datos.';
+                }
+            }
+        </script>
+
+        <!-- Consulta Puntos End -->
 
         <!-- Modal Search Start -->
         <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -99,49 +150,6 @@
         </div>
         <!-- Modal Search End -->
 
-        <!-- Contact Start -->
-        <div class="container-fluid contact bg-light py-5">
-            <div class="container py-5">
-                <div class="row g-5">
-                    <div class="col-lg-6 h-100 wow fadeInUp" data-wow-delay="0.2s">
-                        <div class="text-center mx-auto pb-5" style="max-width: 800px;">
-                            <h4 class="text-uppercase text-primary">Conectemos</h4>
-                            <h1 class="display-3 text-capitalize mb-3">Ubicaciones</h1>
-                            <p class="mb-0">Aquí puedes ver nuestras ubicaciones en Fómeque y Choachí, donde trabajamos por un mundo más sostenible.</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.4s">
-                        <div class="row g-4">
-                            <div class="col-12">
-                                <div class="d-inline-flex rounded bg-white w-100 p-4">
-                                    <i class="fa fa-phone-alt fa-2x text-secondary me-4"></i>
-                                    <div>
-                                        <h4>Teléfonos</h4>
-                                        <p class="mb-0">Fómeque: (+57) 3011816186</p>
-                                        <p class="mb-0">Choachí: (+57) 3209873154</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="h-100 overflow-hidden">
-                                    <h4 class="text-center mb-3">Fómeque</h4>
-                                    <iframe class="w-100 rounded" style="height: 400px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1635.0222383911293!2d-73.89387440674629!3d4.485428115781987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3fbee0e047092d%3A0x7386a82f5afc616b!2sCl.%205%20%234-54%2C%20F%C3%B3meque%2C%20Cundinamarca!5e0!3m2!1sen!2sco!4v1729145678225!5m2!1sen!2sco" 
-                                    loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="h-100 overflow-hidden">
-                                    <h4 class="text-center mb-3">Choachí</h4>
-                                    <iframe class="w-100 rounded" style="height: 400px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3971.5223547508077!2d-73.88111177902174!3d4.079491779217988!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e38e4ab1987a233%3A0x384c60e29a78d60!2sChoach%C3%AD%2C%20Cundinamarca%2C%20Colombia!5e0!3m2!1ses-419!2sco!4v1694259649153!5m2!1ses-419!2sco" 
-                                    loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Contact End -->
 
 
         <!-- Footer Start -->

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Puntos</title>
+</head>
+<body>
+    <h1>Consulta de Puntos</h1>
+    <label for="cedula">Ingrese su cédula:</label>
+    <input type="text" id="cedula" placeholder="Cédula">
+    <button onclick="buscarPuntos()">Consultar Puntos</button>
+    <p id="resultado"></p>
+
+    <script>
+        async function buscarPuntos() {
+            const cedula = document.getElementById('cedula').value;
+            const sheetId = '1y9szhGBswE6P88CGhH0WXrCljQBbTSfhQcb3OJQAA8o';  // ID de tu hoja de cálculo
+            const apiKey = 'AIzaSyBvIMTSU9d4WKOAnCGw1WZLJZ4zsAgbRJY';     // Reemplaza con tu clave de API
+
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Datos?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (!data.values) {
+                    throw new Error("No se encontraron valores en la hoja");
+                }
+
+                // Omitimos la primera fila (encabezados) y buscamos a partir de la segunda fila
+                const filas = data.values.slice(1);  // Omite la primera fila con los encabezados
+                const fila = filas.find(row => row[0] === cedula);
+
+                if (fila) {
+                    const puntos = fila[1];  // Asumimos que la segunda columna tiene los puntos
+                    document.getElementById('resultado').innerText = `Puntos: ${puntos}`;
+                } else {
+                    document.getElementById('resultado').innerText = 'Cédula no encontrada.';
+                }
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+                document.getElementById('resultado').innerText = 'Error al obtener los datos.';
+            }
+        }
+    </script>
+</body>
+</html>
