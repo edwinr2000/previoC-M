@@ -77,7 +77,7 @@
         </div>
         <!-- Navbar & Hero End -->
 
-        <!-- Consulta Puntos Start-->
+       <!-- Consulta Puntos Start-->
         <div class="container-fluid contact bg-light py-5">
             <div class="container py-5">
                 <div class="row g-5">
@@ -95,30 +95,33 @@
                 </div>
             </div>
         </div>
-    
+
         <script>
             async function buscarPuntos() {
                 const cedula = document.getElementById('cedula').value;
                 const sheetId = '1y9szhGBswE6P88CGhH0WXrCljQBbTSfhQcb3OJQAA8o';  // ID de tu hoja de cálculo
-                const apiKey = 'AIzaSyBvIMTSU9d4WKOAnCGw1WZLJZ4zsAgbRJY';     // Reemplaza con tu clave de API
-    
+                const apiKey = 'AIzaSyBvIMTSU9d4WKOAnCGw1WZLJZ4zsAgbRJY';  // Reemplaza con tu clave de API
+
                 const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Datos?key=${apiKey}`;
-    
+
                 try {
                     const response = await fetch(url);
                     const data = await response.json();
-    
+
                     if (!data.values) {
                         throw new Error("No se encontraron valores en la hoja");
                     }
-    
+
                     // Omitimos la primera fila (encabezados) y buscamos a partir de la segunda fila
                     const filas = data.values.slice(1);  // Omite la primera fila con los encabezados
                     const fila = filas.find(row => row[0] === cedula);
-    
+
                     if (fila) {
-                        const puntos = fila[1];  // Asumimos que la segunda columna tiene los puntos
-                        document.getElementById('resultado').innerText = `Puntos: ${puntos}`;
+                        const nombre = fila[1];    // Columna Nombre
+                        const puntos = fila[2];    // Columna Puntos
+                        const sede = fila[3];      // Columna Sede
+                        document.getElementById('resultado').innerText = 
+                            `Estimado(a) ${nombre}, hasta la última actualización de nuestra base de datos, usted tenía ${puntos} puntos disponibles, en la sede ${sede}.`;
                     } else {
                         document.getElementById('resultado').innerText = 'Cédula no encontrada.';
                     }
@@ -128,7 +131,6 @@
                 }
             }
         </script>
-
         <!-- Consulta Puntos End -->
 
         <!-- Modal Search Start -->
@@ -178,7 +180,7 @@
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item d-flex flex-column">
-                            <h4 class="text-white mb-4">Horaros de atención</h4>
+                            <h4 class="text-white mb-4">Horarios de atención</h4>
                             <div class="mb-3">
                                 <h6 class="text-muted mb-0">Lunes a Viernes:</h6>
                                 <p class="text-white mb-0">08:30 am a 1:00 pm y de 2:00 pm a 04:30 pm</p>
